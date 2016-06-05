@@ -271,6 +271,8 @@ int resizeWindow( int width, int height )
     ratio = ( GLfloat )width / ( GLfloat )height;
 
     /* Setup our viewport. */
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
     glViewport( 0, 0, ( GLint )width, ( GLint )height );
 
     /* change to the projection matrix and set our viewing volume. */
@@ -662,7 +664,8 @@ int main( int argc, char **argv )
 			    /* handle resize event */
 			    surface = SDL_SetVideoMode( event.resize.w,
 							event.resize.h,
-							16, videoFlags );
+							32, videoFlags );
+				initGL();
 			    if ( !surface )
 				{
 				    fprintf( stderr, "Could not get a surface after resize: %s\n", SDL_GetError( ) );
