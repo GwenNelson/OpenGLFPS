@@ -97,7 +97,7 @@ GLfloat LightPosition[] = { 0.0f, 0.0f, 2.0f, 1.0f };
 const float piover180 = 0.0174532925f;
 
 GLuint filter;     /* Which Filter To Use */
-GLuint texture[3]; /* Storage for 3 textures */
+GLuint textures[9]; /* Storage for 3 textures */
 
 /* function to release/destroy our resources and restoring the old desktop */
 void Quit( int returnCode )
@@ -115,14 +115,19 @@ void Quit( int returnCode )
 
 GLuint wall_tex;
 /* function to load in bitmap as a GL texture */
-int LoadGLTextures( )
-{
-    wall_tex = SOIL_load_OGL_texture("wall.png",0,0,SOIL_LOAD_AUTO);
-    glBindTexture( GL_TEXTURE_2D, wall_tex );
-    
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-    return 1;
+void load_gl_textures() {
+     char tex_filename[16];
+     int i;
+     for(i=0; i<9; i++) {
+        snprintf(tex_filename,15,"texture%d.png",i);
+        printf("%s\n",tex_filename);
+        textures[i] = SOIL_load_OGL_texture(tex_filename,0,0,SOIL_LOAD_AUTO);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glBindTexture(GL_TEXTURE_2D,textures[i]);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+     }
 }
 
 
@@ -298,9 +303,7 @@ int initGL( GLvoid )
 {
 
     /* Load in the texture */
-    if ( !LoadGLTextures( ) )
-	return FALSE;
-
+    load_gl_textures();
     /* Enable Texture Mapping */
    glEnable( GL_TEXTURE_2D );
 
@@ -382,7 +385,7 @@ int drawGLScene( GLvoid )
     /* Translate The Scene Based On Player Position */
     glTranslatef( xtrans, ytrans, ztrans );
     /* Select A Texture Based On filter */
-    glBindTexture( GL_TEXTURE_2D, wall_tex );
+
         
     /* Process Each Triangle */
 //    glBegin(GL_TRIANGLES);
@@ -444,6 +447,7 @@ int drawGLScene( GLvoid )
     for(w=0; w<mapWidth; w++) {
         for(h=0; h<mapHeight; h++) {
             if(worldMap[w][h]>0) {
+              glBindTexture( GL_TEXTURE_2D, textures[worldMap[w][h]-1] );
               glBegin(GL_QUADS);
                 glColor3f(1.0,1.0,1.0);
                 glTexCoord2f(0.0,0.0); glVertex3f(w,1.0,h);
