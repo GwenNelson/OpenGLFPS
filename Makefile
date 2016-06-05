@@ -1,4 +1,9 @@
-all: engine
+CC = cc -g -Ofast -Wall 
 
-engine: engine.c
-	cc -g -Ofast -o engine soil/*.c engine.c -framework OpenGL `sdl-config --cflags --libs`  -lSOIL -lGLU
+all:
+	$(CC) engine.c -o engine -framework OpenGL -lGLU -lm `sdl-config --cflags --libs`
+
+clean:
+	@echo Cleaning up...
+	@rm engine
+	@echo Done.

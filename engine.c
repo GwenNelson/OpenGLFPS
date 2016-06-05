@@ -12,7 +12,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include <SDL.h>
+#include "SDL.h"
 
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH 1280 
@@ -122,7 +122,7 @@ int LoadGLTextures( )
     SDL_Surface *TextureImage[1]; 
 
     /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-    if ( ( TextureImage[0] = SDL_LoadBMP( "data/mud.bmp" ) ) )
+    if ( ( TextureImage[0] = SDL_LoadBMP( "mud.bmp" ) ) )
         {
 
 	    /* Set the status to true */
@@ -361,11 +361,11 @@ int initGL( GLvoid )
 {
 
     /* Load in the texture */
-    if ( !LoadGLTextures( ) )
-	return FALSE;
+//    if ( !LoadGLTextures( ) )
+//	return FALSE;
 
     /* Enable Texture Mapping */
-    glEnable( GL_TEXTURE_2D );
+ //   glEnable( GL_TEXTURE_2D );
 
 
     /* Enable smooth shading */
@@ -445,7 +445,7 @@ int drawGLScene( GLvoid )
     /* Translate The Scene Based On Player Position */
     glTranslatef( xtrans, ytrans, ztrans );
     /* Select A Texture Based On filter */
-    glBindTexture( GL_TEXTURE_2D, texture[filter] );
+//    glBindTexture( GL_TEXTURE_2D, texture[filter] );
         
     /* Process Each Triangle */
 //    glBegin(GL_TRIANGLES);
@@ -641,7 +641,6 @@ int main( int argc, char **argv )
 	    Quit( 1 );
 	}
 
-    SetupWorld("data/world.txt");
 
     /* initialize OpenGL */
     initGL( );
