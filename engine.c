@@ -12,6 +12,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+#include <SOIL.h>
 #include "SDL.h"
 
 /* screen width, height, and bit depth */
@@ -112,82 +113,16 @@ void Quit( int returnCode )
     exit( returnCode );
 }
 
+GLuint wall_tex;
 /* function to load in bitmap as a GL texture */
 int LoadGLTextures( )
 {
-    /* Status indicator */
-    int Status = FALSE;
-
-    /* Create storage space for the texture */
-    SDL_Surface *TextureImage[1]; 
-
-    /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-    if ( ( TextureImage[0] = SDL_LoadBMP( "mud.bmp" ) ) )
-        {
-
-	    /* Set the status to true */
-	    Status = TRUE;
-
-	    /* Create The Texture */
-	    glGenTextures( 3, &texture[0] );
-
-	    /* Load in texture 1 */
-	    /* Typical Texture Generation Using Data From The Bitmap */
-	    glBindTexture( GL_TEXTURE_2D, texture[0] );
-
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT );
-     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
-	    /* Generate The Texture */
-	    glTexImage2D( GL_TEXTURE_2D, 0, 3, TextureImage[0]->w,
-			  TextureImage[0]->h, 0, GL_BGR,
-			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-	    
-	    /* Nearest Filtering */
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			     GL_NEAREST );
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			     GL_NEAREST );
-
-	    /* Load in texture 2 */
-	    /* Typical Texture Generation Using Data From The Bitmap */
-	    glBindTexture( GL_TEXTURE_2D, texture[1] );
-
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT );
-     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
-
-	    /* Linear Filtering */
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			     GL_LINEAR );
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			     GL_LINEAR );
-
-	    /* Generate The Texture */
-	    glTexImage2D( GL_TEXTURE_2D, 0, 3, TextureImage[0]->w,
-			  TextureImage[0]->h, 0, GL_BGR,
-			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-
-	    /* Load in texture 3 */
-	    /* Typical Texture Generation Using Data From The Bitmap */
-	    glBindTexture( GL_TEXTURE_2D, texture[2] );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT );
-     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT );
-	    /* Mipmapped Filtering */
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			     GL_LINEAR_MIPMAP_NEAREST );
-	    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			     GL_LINEAR );
-
-	    /* Generate The MipMapped Texture ( NEW ) */
-	    gluBuild2DMipmaps( GL_TEXTURE_2D, 3, TextureImage[0]->w,
-			       TextureImage[0]->h, GL_BGR,
-			       GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-        }
-
-    /* Free up any memory we may have used */
-    if ( TextureImage[0] )
-	    SDL_FreeSurface( TextureImage[0] );
-
-    return Status;
+    wall_tex = SOIL_load_OGL_texture("wall.png",0,0,SOIL_LOAD_AUTO);
+    glBindTexture( GL_TEXTURE_2D, wall_tex );
+    
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    return 1;
 }
 
 
@@ -363,11 +298,11 @@ int initGL( GLvoid )
 {
 
     /* Load in the texture */
-//    if ( !LoadGLTextures( ) )
-//	return FALSE;
+    if ( !LoadGLTextures( ) )
+	return FALSE;
 
     /* Enable Texture Mapping */
- //   glEnable( GL_TEXTURE_2D );
+   glEnable( GL_TEXTURE_2D );
 
 
     /* Enable smooth shading */
@@ -447,7 +382,7 @@ int drawGLScene( GLvoid )
     /* Translate The Scene Based On Player Position */
     glTranslatef( xtrans, ytrans, ztrans );
     /* Select A Texture Based On filter */
-//    glBindTexture( GL_TEXTURE_2D, texture[filter] );
+    glBindTexture( GL_TEXTURE_2D, wall_tex );
         
     /* Process Each Triangle */
 //    glBegin(GL_TRIANGLES);
@@ -505,21 +440,25 @@ int drawGLScene( GLvoid )
 //    glEnd();
     int w;
     int h;
-    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
     for(w=0; w<mapWidth; w++) {
         for(h=0; h<mapHeight; h++) {
             if(worldMap[w][h]>0) {
               glBegin(GL_QUADS);
-                glColor3f(0.0,1.0,0.0);
-                glVertex3f(w,1.0,h);
-                glVertex3f(w,0.0,h);
-                glVertex3f(w,0.0,h);
-                glVertex3f(w,0.0,h+1.0);
-                glVertex3f(w,0.0,h+1.0);
+                glColor3f(1.0,1.0,1.0);
+                glTexCoord2f(0.0,0.0); glVertex3f(w,1.0,h);
+                glTexCoord2f(1.0,0.0); glVertex3f(w,1.0,h+1.0);
+                glTexCoord2f(1.0,1.0);  glVertex3f(w,0.0,h+1.0);
+                glTexCoord2f(0.0,1.0); glVertex3f(w,0.0,h);
+/*                glTexCoord2f(0.0,1.0); glVertex3f(w,1.0,h);
+                glTexCoord2f(0.0,0.0); glVertex3f(w,0.0,h);
+                glTexCoord2f(0.0,0.0); glVertex3f(w,0.0,h);
+                glTexCoord2f(0.0,1.0); glVertex3f(w,0.0,h+1.0);
+                glTexCoord2f(0.0,1.0); glVertex3f(w,0.0,h+1.0);
+                glTexCoord2f(0.0,6.0); glVertex3f(w,1.0,h+1.0);
                 glVertex3f(w,1.0,h+1.0);
-                glVertex3f(w,1.0,h+1.0);
-                glVertex3f(w,1.0,h);
-
+                glVertex3f(w,1.0,h);*/
+/*
 
                 glColor3f(1.0,0.0,0.0);
                 glVertex3f(w,1.0,h);
@@ -549,13 +488,13 @@ int drawGLScene( GLvoid )
                 glVertex3f(w,    0.0,h+1.0);
                 glVertex3f(w-1.0,0.0,h+1.0);
                 glVertex3f(w-1.0,0.0,h+1.0);
-                glVertex3f(w-1.0,1.0,h+1.0);
+                glVertex3f(w-1.0,1.0,h+1.0);*/
               glEnd();
             } else {
                 glColor3f(0.0,0.0,1.0);
-                glBegin(GL_QUADS);
+                glBegin(GL_LINES);
                   /* floor */
-                  glVertex3f(w,    0.0,h);
+/*                  glVertex3f(w,    0.0,h);
                   glVertex3f(w+1.0,0.0,h);
 
                   glVertex3f(w+1.0,0.0,h);
@@ -565,10 +504,10 @@ int drawGLScene( GLvoid )
                   glVertex3f(w-1.0,0.0,h+1.0);
 
                   glVertex3f(w-1.0,0.0,h+1.0);
-                  glVertex3f(w-1.0,0.0,h-1.0);
+                  glVertex3f(w-1.0,0.0,h-1.0);*/
 
                   /* ceiling */
-                  glColor3f(0.0,0.0,0.5);
+/*                  glColor3f(0.0,0.0,0.5);
                   glVertex3f(w,    1.0,h);
                   glVertex3f(w+1.0,1.0,h);
 
@@ -579,7 +518,7 @@ int drawGLScene( GLvoid )
                   glVertex3f(w-1.0,1.0,h+1.0);
 
                   glVertex3f(w-1.0,1.0,h+1.0);
-                  glVertex3f(w-1.0,1.0,h-1.0);
+                  glVertex3f(w-1.0,1.0,h-1.0);*/
                 glEnd();
             }
         }
