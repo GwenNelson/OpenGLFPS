@@ -348,6 +348,16 @@ int initGL( GLvoid )
     /* Blending Function For Translucency Based On Source Alpha Value */
     glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
+glFogi(GL_FOG_MODE, GL_LINEAR);        // Fog Mode
+GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
+glFogf(GL_FOG_DENSITY, 0.5f);              // How Dense Will The Fog Be
+glHint(GL_FOG_HINT, GL_NICEST);          // Fog Hint Value
+glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
+glFogf(GL_FOG_END, 15.0f);               // Fog End Depth
+glEnable(GL_FOG);                   // Enables GL_FOG
+
+
     return( TRUE );
 }
 
@@ -511,10 +521,10 @@ int drawGLScene( GLvoid )
                 glVertex3f(w-1.0,1.0,h+1.0);*/
               glEnd();
             } else {
-                glColor3f(0.0,0.0,1.0);
+                glColor3f(0.0,1.0,0.0);
                 glBegin(GL_LINES);
                   /* floor */
-/*                  glVertex3f(w,    0.0,h);
+                  glVertex3f(w,    0.0,h);
                   glVertex3f(w+1.0,0.0,h);
 
                   glVertex3f(w+1.0,0.0,h);
@@ -524,10 +534,9 @@ int drawGLScene( GLvoid )
                   glVertex3f(w-1.0,0.0,h+1.0);
 
                   glVertex3f(w-1.0,0.0,h+1.0);
-                  glVertex3f(w-1.0,0.0,h-1.0);*/
+                  glVertex3f(w-1.0,0.0,h-1.0);
 
                   /* ceiling */
-/*                  glColor3f(0.0,0.0,0.5);
                   glVertex3f(w,    1.0,h);
                   glVertex3f(w+1.0,1.0,h);
 
@@ -538,7 +547,7 @@ int drawGLScene( GLvoid )
                   glVertex3f(w-1.0,1.0,h+1.0);
 
                   glVertex3f(w-1.0,1.0,h+1.0);
-                  glVertex3f(w-1.0,1.0,h-1.0);*/
+                  glVertex3f(w-1.0,1.0,h-1.0);
                 glEnd();
             }
         }
