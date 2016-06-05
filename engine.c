@@ -551,6 +551,21 @@ int drawGLScene( GLvoid )
                 glVertex3f(w-1.0,0.0,h+1.0);
                 glVertex3f(w-1.0,1.0,h+1.0);
               glEnd();
+            } else {
+                glColor3f(0.0,0.0,1.0);
+                glBegin(GL_QUADS);
+                  glVertex3f(w,    0.0,h);
+                  glVertex3f(w+1.0,0.0,h);
+
+                  glVertex3f(w+1.0,0.0,h);
+                  glVertex3f(w+1.0,0.0,h+1.0);
+
+                  glVertex3f(w+1.0,0.0,h+1.0);
+                  glVertex3f(w-1.0,0.0,h+1.0);
+
+                  glVertex3f(w-1.0,0.0,h+1.0);
+                  glVertex3f(w-1.0,0.0,h-1.0);
+                glEnd();
             }
         }
     }
