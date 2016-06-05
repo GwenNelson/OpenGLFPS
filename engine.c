@@ -554,6 +554,7 @@ int drawGLScene( GLvoid )
             } else {
                 glColor3f(0.0,0.0,1.0);
                 glBegin(GL_QUADS);
+                  /* floor */
                   glVertex3f(w,    0.0,h);
                   glVertex3f(w+1.0,0.0,h);
 
@@ -565,6 +566,20 @@ int drawGLScene( GLvoid )
 
                   glVertex3f(w-1.0,0.0,h+1.0);
                   glVertex3f(w-1.0,0.0,h-1.0);
+
+                  /* ceiling */
+                  glColor3f(0.0,0.0,0.5);
+                  glVertex3f(w,    1.0,h);
+                  glVertex3f(w+1.0,1.0,h);
+
+                  glVertex3f(w+1.0,1.0,h);
+                  glVertex3f(w+1.0,1.0,h+1.0);
+
+                  glVertex3f(w+1.0,1.0,h+1.0);
+                  glVertex3f(w-1.0,1.0,h+1.0);
+
+                  glVertex3f(w-1.0,1.0,h+1.0);
+                  glVertex3f(w-1.0,1.0,h-1.0);
                 glEnd();
             }
         }
