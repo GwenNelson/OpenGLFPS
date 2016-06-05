@@ -349,9 +349,9 @@ int initGL( GLvoid )
     glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
 glFogi(GL_FOG_MODE, GL_LINEAR);        // Fog Mode
-GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 0.5f};
 glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-glFogf(GL_FOG_DENSITY, 0.5f);              // How Dense Will The Fog Be
+glFogf(GL_FOG_DENSITY, 0.35f);              // How Dense Will The Fog Be
 glHint(GL_FOG_HINT, GL_NICEST);          // Fog Hint Value
 glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
 glFogf(GL_FOG_END, 15.0f);               // Fog End Depth
@@ -521,33 +521,15 @@ int drawGLScene( GLvoid )
                 glVertex3f(w-1.0,1.0,h+1.0);*/
               glEnd();
             } else {
-                glColor3f(0.0,1.0,0.0);
-                glBegin(GL_LINES);
+                glColor3f(0.9,0.9,0.9);
+                glBindTexture(GL_TEXTURE_2D,textures[7]);
+                glBegin(GL_QUADS);
                   /* floor */
-                  glVertex3f(w,    0.0,h);
-                  glVertex3f(w+1.0,0.0,h);
-
-                  glVertex3f(w+1.0,0.0,h);
-                  glVertex3f(w+1.0,0.0,h+1.0);
-
-                  glVertex3f(w+1.0,0.0,h+1.0);
+                  glVertex3f(w-1.0,    0.0,h);
+                  glVertex3f(w,0.0,h);
+                  glVertex3f(w,0.0,h+1.0);
                   glVertex3f(w-1.0,0.0,h+1.0);
 
-                  glVertex3f(w-1.0,0.0,h+1.0);
-                  glVertex3f(w-1.0,0.0,h-1.0);
-
-                  /* ceiling */
-                  glVertex3f(w,    1.0,h);
-                  glVertex3f(w+1.0,1.0,h);
-
-                  glVertex3f(w+1.0,1.0,h);
-                  glVertex3f(w+1.0,1.0,h+1.0);
-
-                  glVertex3f(w+1.0,1.0,h+1.0);
-                  glVertex3f(w-1.0,1.0,h+1.0);
-
-                  glVertex3f(w-1.0,1.0,h+1.0);
-                  glVertex3f(w-1.0,1.0,h-1.0);
                 glEnd();
             }
         }
